@@ -1,17 +1,19 @@
-import subprocess
+import docker
+from main import *
 
 
-class NodeExporter:
-    def __init__(self, image):
+class Node:
+    def __init__(self, image='quay.io/prometheus/node-exporter:latest', client=docker.from_env()):
         self.image = image
+        self.docker_client = client
 
     def run(self):
-        docker_command = ['docker run -d',
-                          '{0}:latest'.format(self.image),
-                          '--pid_mode="host"',
-                          '-p 9100:9100',
-                          '-v "/:/host:ro"',
-                          '--path.rootfs=/host'
-                          ]
-
-        subprocess.run(' '.join(docker_command))
+        docker_client = docker.from_env()
+        docker_client.containers.run(image=self.image,
+                                     detach=True,
+                                     network_mode='container:prometheus',
+                                     command='--path.rootfs=/host',
+                                     pid_mode='host',
+                                     volumes={
+                                         '/': {'bind': '/host', 'mode': 'ro'}
+                                     })
