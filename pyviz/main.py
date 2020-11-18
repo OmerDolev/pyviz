@@ -3,6 +3,7 @@ import argparse
 import docker
 from prom import *
 from node import *
+from grafana import *
 import atexit
 import time
 import signal
@@ -14,6 +15,8 @@ def main():
     print(docker_client.containers.list())
     node = Node(client=docker_client)
     node.run()
+    grafana = Grafana(client=docker_client)
+    grafana.run()
 
     while docker_client.containers.list():
         time.sleep(10)

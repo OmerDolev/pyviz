@@ -22,12 +22,12 @@ class Prom:
         docker_client.containers.run(image="prom/prometheus:{0}".format(self.version),
                                      name='prometheus',
                                      detach=True,
-                                     network_mode="bridge",
                                      command=' '.join(prom_command),
                                      ports={
                                          '9090/tcp': ('127.0.0.1', 9090),
-                                         '9100/tcp': ('127.0.0.1', 9100)
+                                         '9100/tcp': ('127.0.0.1', 9100),
+                                         '3000/tcp': ('127.0.0.1', 3000)
                                      },
                                      volumes={
-                                          '{0}/../data/prometheus.yml'.format(current_workdir): {'bind': '/etc/prometheus/prometheus.yml', 'mode': 'ro'}
+                                          '{0}/data/prometheus.yml'.format(current_workdir): {'bind': '/etc/prometheus/prometheus.yml', 'mode': 'ro'}
                                      })

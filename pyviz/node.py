@@ -10,10 +10,10 @@ class Node:
     def run(self):
         docker_client = docker.from_env()
         docker_client.containers.run(image=self.image,
+                                     name='node-exporter',
                                      detach=True,
                                      network_mode='container:prometheus',
                                      command='--path.rootfs=/host',
-                                     pid_mode='host',
                                      volumes={
                                          '/': {'bind': '/host', 'mode': 'ro'}
                                      })
