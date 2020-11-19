@@ -32,4 +32,4 @@ python3 ./pyviz/main.py --prom-version v1.8.1 --retention 48h
 
 - When the app exits it removes all the containers it created.
 
-- If a container failed to run for some reason, the app
+- If a container failed to run for some reason, the app will print it's logs and exit
