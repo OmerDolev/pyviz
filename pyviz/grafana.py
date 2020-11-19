@@ -29,7 +29,7 @@ class Grafana:
                                           })
 
         time.sleep(5)
-        if grafana_container.status != 'running' and grafana_container.status != 'created':
+        if 'grafana' not in [c.name for c in self.docker_client.containers.list()]:
             print("node conatiner stopped running...\n")
             print("{0}".format(grafana_container.logs().decode("utf-8")))
             cleanup(self.docker_client)

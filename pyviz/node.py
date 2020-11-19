@@ -19,7 +19,7 @@ class Node:
                                                            })
 
         time.sleep(5)
-        if node_container.status != 'running' and node_container.status != 'created':
+        if 'node-exporter' not in [c.name for c in self.docker_client.containers.list()]:
             print("node conatiner stopped running...\n")
             print("{0}".format(node_container.logs().decode("utf-8")))
             cleanup(self.docker_client)

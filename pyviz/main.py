@@ -17,7 +17,6 @@ def main():
 
     prom = Prom(client=docker_client, version=args.promver, storage_retention=args.retention)
     prom.run()
-    print(docker_client.containers.list())
     node = Node(client=docker_client)
     node.run()
     grafana = Grafana(client=docker_client)

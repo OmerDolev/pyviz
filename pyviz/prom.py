@@ -41,7 +41,7 @@ class Prom:
                                                            })
 
         time.sleep(5)
-        if prom_container.status != 'running' and prom_container.status != 'created':
+        if 'prometheus' not in [c.name for c in self.docker_client.containers.list()]:
             print("prom conatiner stopped running...\n")
             print("{0}".format(prom_container.logs().decode("utf-8")))
             cleanup(self.docker_client)
