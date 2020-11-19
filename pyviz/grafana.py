@@ -1,5 +1,7 @@
 import docker
 import os
+from main import *
+import time
 
 
 class Grafana:
@@ -10,7 +12,7 @@ class Grafana:
     def run(self):
         current_workdir = os.getcwd()
 
-        self.docker_client.containers.run(image=self.image,
+        grafana_container = self.docker_client.containers.run(image=self.image,
                                           name='grafana',
                                           detach=True,
                                           network_mode='container:prometheus',
@@ -25,3 +27,10 @@ class Grafana:
                                                   'bind': '/etc/grafana/provisioning/dashboards/dashboard.yml',
                                                   'mode': 'ro'}
                                           })
+
+        time.sleep(5)
+        if grafana_container.status != 'running' and grafana_container.status != 'created':
+            print("node conatiner stopped running...\n")
+            print("{0}".format(grafana_container.logs().decode("utf-8")))
+            cleanup(self.docker_client)
+            exit(2)

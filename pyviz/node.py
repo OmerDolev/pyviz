@@ -1,5 +1,6 @@
 import docker
 from main import *
+import time
 
 
 class Node:
@@ -8,12 +9,18 @@ class Node:
         self.docker_client = client
 
     def run(self):
-        docker_client = docker.from_env()
-        docker_client.containers.run(image=self.image,
-                                     name='node-exporter',
-                                     detach=True,
-                                     network_mode='container:prometheus',
-                                     command='--path.rootfs=/host',
-                                     volumes={
-                                         '/': {'bind': '/host', 'mode': 'ro'}
-                                     })
+        node_container = self.docker_client.containers.run(image=self.image,
+                                                           name='node-exporter',
+                                                           detach=True,
+                                                           network_mode='container:prometheus',
+                                                           command='--path.rootfs=/host',
+                                                           volumes={
+                                                               '/': {'bind': '/host', 'mode': 'ro'}
+                                                           })
+
+        time.sleep(5)
+        if node_container.status != 'running' and node_container.status != 'created':
+            print("node conatiner stopped running...\n")
+            print("{0}".format(node_container.logs().decode("utf-8")))
+            cleanup(self.docker_client)
+            exit(2)

@@ -10,7 +10,13 @@ import signal
 
 
 def main():
-    prom = Prom(client=docker_client)
+
+    # adding arguments to parser
+    parser.add_argument('--prom-version', dest='promver', default='latest', help='Prometheus version (default: latest)')
+    parser.add_argument('--retention', dest='retention', default='48h', help='Prometheus version (default: 48h)')
+    args = parser.parse_args()
+
+    prom = Prom(client=docker_client, version=args.promver, storage_retention=args.retention)
     prom.run()
     print(docker_client.containers.list())
     node = Node(client=docker_client)
@@ -22,20 +28,13 @@ def main():
         time.sleep(10)
 
 
-def receive_signal():
-    for container in docker_client.containers.list():
-        container.stop()
+def cleanup(dclient):
+    for container in dclient.containers.list(all=True):
+        container.remove(force=True)
 
 
 if __name__ == '__main__':
-    # signal.signal(signal.SIGHUP, receive_signal)
-    # signal.signal(signal.SIGINT, receive_signal)
-    # signal.signal(signal.SIGQUIT, receive_signal)
-    # signal.signal(signal.SIGILL, receive_signal)
-    # signal.signal(signal.SIGTRAP, receive_signal)
-    # signal.signal(signal.SIGABRT, receive_signal)
-    # signal.signal(signal.SIGBUS, receive_signal)
-    # signal.signal(signal.SIGFPE, receive_signal)
     docker_client = docker.from_env()
-    # atexit.register(receive_signal)
+    parser = argparse.ArgumentParser(description='getting prometheus version')
+    atexit.register(cleanup, docker_client)
     main()
