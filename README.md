@@ -10,7 +10,9 @@ A Prometheus container, a node_exporter container and a grafana container
 ## Installation & Usage
 Before installing you need to have docker and python3 installed on your machine.
 For mac and windows it can be docker desktop, and for linux it can be docker-ce for example.
-And the regular Python3 installation
+Regular Python3 installation should suffice.
+
+Steps:
 
 1. Clone this respository to a local dir
 
