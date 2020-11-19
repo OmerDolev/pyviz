@@ -6,7 +6,6 @@ from node import *
 from grafana import *
 import atexit
 import time
-import signal
 
 
 def main():
